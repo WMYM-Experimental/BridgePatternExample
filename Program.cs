@@ -1,7 +1,18 @@
+using BridgePatternExample.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using BridgePatternExample.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<BridgePatternExampleContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("BridgePatternExampleContext") ?? throw new InvalidOperationException("Connection string 'BridgePatternExampleContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// ConfigureServices en Startup.cs
+builder.Services.AddScoped<ICarRepository, CarRepository>();
+builder.Services.AddScoped<CarService, CarServiceBridge>();
 
 var app = builder.Build();
 
